@@ -1,16 +1,19 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 
-#include"SList.h"
+#include"List.h"
 
 int main()
 {
-	//≤‚ ‘
-	SListNode* p = NULL;
-	SListPushBack(&p, 1);
-	SListPushBack(&p, 2);
-	SListPushBack(&p, 3);
-	SListEraseAfter(p);
-	SListEraseAfter(p);
-	SListPrint(p);
+	ListNode* head = ListCreate();
+	ListPushBack(head, 1);
+	ListPushBack(head, 2);
+	ListPushBack(head, 3);
+	ListPushBack(head, 4);
+	ListPushBack(head, 5);
+	/*ListInsert(ListFind(head, 3), 33);*/
+	ListErase(ListFind(head,3));
+	ListErase(ListFind(head,1));
+	ListPrint(head);
+	ListDestory(&head);
 	return 0;
 }
