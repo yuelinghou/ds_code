@@ -1,19 +1,20 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 
-#include"List.h"
+#include"Stack.h"
 
 int main()
 {
-	ListNode* head = ListCreate();
-	ListPushBack(head, 1);
-	ListPushBack(head, 2);
-	ListPushBack(head, 3);
-	ListPushBack(head, 4);
-	ListPushBack(head, 5);
-	/*ListInsert(ListFind(head, 3), 33);*/
-	ListErase(ListFind(head,3));
-	ListErase(ListFind(head,1));
-	ListPrint(head);
-	ListDestory(&head);
+	Stack s;
+	StackInit(&s);
+	StackPush(&s, 1);
+	StackPush(&s, 2);
+	StackPush(&s, 3);
+	StackPush(&s, 4);
+	while (!StackEmpty(&s))
+	{
+		printf("%d ", StackTop(&s));
+		StackPop(&s);
+	}
+	StackDestroy(&s);
 	return 0;
 }
