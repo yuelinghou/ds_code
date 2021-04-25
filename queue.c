@@ -1,109 +1,82 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 
-#include"queue.h"
+#include "queue.h"
 
-// 初始化队列
-void QueueInit(Queue* q)
+void QueueInit(Queue* pq)
 {
-	//断言，保证指针的有效性
-	assert(q);
-	//把指向第一个和最后一个节点的指针初始化为NULL
-	q->_head = q->_tail = NULL;
+	assert(pq);
+	pq->head = NULL;
+	pq->tail = NULL;
 }
 
-// 队尾入队列
-void QueuePush(Queue* q, QDataType data)
+void QueueDestroy(Queue* pq)
 {
-	assert(q);
-	//新开辟一个新的节点
-	QNode* newnode = (QNode*)malloc(sizeof(QNode));
-	//对新的节点初始化
-	newnode->_data = data;
-	newnode->_pnext = NULL;
-	//1.队列没有节点的情况
-	if (q->_tail == NULL)
+	assert(pq);
+	while (pq->head)
 	{
-		q->_head = q->_tail = newnode;
+		QueueNode* tmp = pq->head->next;
+		free(pq->head);
+		pq->head = tmp;
 	}
-	else//2.队列已经有节点的情况
-	{
-		q->_tail->_pnext = newnode;
-		q->_tail = newnode;
-	}
+	pq->head = NULL;
+	pq->tail = NULL;
 }
 
-// 队头出队列
-void QueuePop(Queue* q)
+void QueuePush(Queue* pq, QDataType x)
 {
-	assert(q);
-	//1.队列只有一个节点的情况
-	//释放了空间后还要把原来指向第一个和最后一个节点的指针置为NULL
-	if (q->_head->_pnext == NULL)
+	assert(pq);
+	QueueNode* newnode = (QueueNode*)malloc(sizeof(QueueNode));
+	newnode->next = NULL;
+	newnode->data = x;
+	if (!pq->head)
 	{
-		free(q->_head);
-		q->_head = q->_tail = NULL;
+		pq->head = pq->tail = newnode;
 	}
-	//2.队列至少一个节点的情况
 	else
 	{
-		//释放第一个节点前要保留第二个节点的地址
-		QNode* next = q->_head->_pnext;
-		//释放第一个节点
-		free(q->_head);
-		//之前的第二个节点变为第一个节点
-		q->_head = next;
+		pq->tail->next = newnode;
+		pq->tail = newnode;
 	}
 }
 
-// 获取队列头部元素
-QDataType QueueFront(Queue* q)
+void QueuePop(Queue* pq)
 {
-	assert(q);
-	return q->_head->_data;
+	assert(pq);
+	assert(pq->head);
+	QueueNode* tmp = pq->head->next;
+	free(pq->head);
+	pq->head = tmp;
 }
 
-// 获取队列队尾元素
-QDataType QueueBack(Queue* q)
+int QueueEmpty(Queue* pq)
 {
-	assert(q);
-	return q->_tail->_data;
+	assert(pq);
+	return pq->head == NULL ? 1 : 0;
 }
 
-// 获取队列中有效元素个数
-int QueueSize(Queue* q)
+int QueueSize(Queue* pq)
 {
-	assert(q);
-	QNode* cur = q->_head;
-	int n = 0;
-	//遍历队列
+	assert(pq);
+	QueueNode* cur = pq->head;
+	int size = 0;
 	while (cur)
 	{
-		n++;
-		cur = cur->_pnext;
+		size++;
+		cur = cur->next;
 	}
-	return n;
+	return size;
 }
 
-// 检测队列是否为空，如果为空返回1，如果非空返回0
-int QueueEmpty(Queue* q)
+QDataType QueueFront(Queue* pq)
 {
-	assert(q);
-	return q->_head == NULL ? 1 : 0;
+	assert(pq);
+	assert(pq->head);
+	return pq->head->data;
 }
 
-// 销毁队列
-void QueueDestroy(Queue* q)
+QDataType QueueBack(Queue* pq)
 {
-	assert(q);
-	QNode* cur = q->_head;
-	//遍历队列
-	while (cur)
-	{
-		//销毁之前保留后一个节点的地址
-		QNode* next = cur->_pnext;
-		free(cur);
-		cur = next;
-	}
-	//防止野指针
-	q->_head = q->_tail = NULL;
+	assert(pq);
+	assert(pq->tail);
+	return pq->tail->data;
 }
